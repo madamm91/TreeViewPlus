@@ -61,47 +61,22 @@
                                             <Setter Property="Control.Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                                        <Border Padding="5" Background="#00FFFFFF" Width="16" Height="16">
-                                                            <Path Fill="#00FFFFFF" Stroke="#FF989898" Name="ExpandPath">
-                                                                <Path.Data>
-                                                                    <PathGeometry Figures="M0,0L0,6L6,0z" />
-                                                                </Path.Data>
-                                                                <Path.RenderTransform>
-                                                                    <RotateTransform Angle="135" CenterX="3" CenterY="3" />
-                                                                </Path.RenderTransform>
-                                                            </Path>
+                                                        <Border Width="19" Height="13" Background="Transparent">
+                                                            <Border Width="9" Height="9" SnapsToDevicePixels="true" BorderBrush="#FF7898B5"
+                                                                    BorderThickness="1" CornerRadius="1">
+                                                                <Border.Background>
+                                                                    <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                                                        <GradientStop Color="White" Offset=".2" />
+                                                                        <GradientStop Color="#FFC0B7A6" Offset="1" />
+                                                                    </LinearGradientBrush>
+                                                                </Border.Background>
+                                                                <Path x:Name="ExpandPath" Fill="Black" Margin="1,1,1,1"
+                                                                      Data="M 0 2 L 0 3 L 2 3 L 2 5 L 3 5 L 3 3 L 5 3 L 5 2 L 3 2 L 3 0 L 2 0 L 2 2 Z" />
+                                                            </Border>
                                                         </Border>
                                                         <ControlTemplate.Triggers>
-                                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
-                                                                <Setter Property="Shape.Stroke" TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <SolidColorBrush>
-                                                                            #FF1BBBFA</SolidColorBrush>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                                <Setter Property="Shape.Fill" TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <SolidColorBrush>#00FFFFFF</SolidColorBrush>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                            </Trigger>
-                                                            <Trigger Property="ToggleButton.IsChecked" Value="True">
-                                                                <Setter Property="UIElement.RenderTransform"
-                                                                TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <RotateTransform Angle="180" CenterX="3" CenterY="3" />
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                                <Setter Property="Shape.Fill" TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <SolidColorBrush>#FF595959</SolidColorBrush>
-                                                                    </Setter.Value>
-                                                                </Setter>
-                                                                <Setter Property="Shape.Stroke" TargetName="ExpandPath">
-                                                                    <Setter.Value>
-                                                                        <SolidColorBrush>#FF262626</SolidColorBrush>
-                                                                    </Setter.Value>
-                                                                </Setter>
+                                                            <Trigger Property="IsChecked" Value="True">
+                                                                <Setter Property="Data" TargetName="ExpandPath" Value="M 0 2 L 0 3 L 5 3 L 5 2 Z" />
                                                             </Trigger>
                                                         </ControlTemplate.Triggers>
                                                     </ControlTemplate>
