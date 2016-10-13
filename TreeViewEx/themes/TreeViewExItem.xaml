@@ -97,9 +97,39 @@
                                     SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                             </DockPanel>
                         </Border>
-                        <ItemsPresenter x:Name="itemsPresenter" Visibility="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisiblityConverterCollapsed}, FallbackValue=Hidden}"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <ItemsPresenter x:Name="itemsPresenter" Grid.Row="1" Visibility="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisiblityConverterCollapsed}, FallbackValue=Hidden}"/>
+
+                            <Grid Name="GridLines" Grid.Row="0" Grid.RowSpan="2">
+                                <Grid.Resources>
+                                    <Style x:Key="{x:Type Rectangle}" TargetType="Rectangle">
+                                        <Setter Property="Stroke" Value="#8888" />
+                                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Rectangle Name="VerticalLine0" Margin="7,-8,10,-1" Width="1" Height="7" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed"/>
+                                <Rectangle Name="VerticalLine1" Margin="7,-1,10,0" Width="1" Height="12" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                <Rectangle Name="VerticalLine2" Margin="7,11,0,-8" Width="1" HorizontalAlignment="Left"/>
+                                <Rectangle Margin="8,10,0,0" Height="1" Width="11" VerticalAlignment="Top" HorizontalAlignment="Left" Name="HorizontalLine"/>
+                            </Grid>
+                        </Grid>
                     </StackPanel>
                     <ControlTemplate.Triggers>
+
+                        <DataTrigger Binding="{Binding Parent}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="VerticalLine0" />
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="VerticalLine1" />
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding IsLastSibling}" Value="true">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="VerticalLine2" />
+                        </DataTrigger>
+
                         <Trigger Property="IsMouseOver" Value="True" SourceName="border">
                             <Setter Property="Control.Background" TargetName="border"
                                     Value="{Binding BackgroundHovered, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Controls:TreeViewExItem}, AncestorLevel=1}}" />
