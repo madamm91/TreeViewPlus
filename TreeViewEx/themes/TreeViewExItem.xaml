@@ -8,7 +8,7 @@
     <Controls:DoubleToThicknessLeftConverter x:Key="doubleToMarginConverter"/>
     <Style TargetType="{x:Type Controls:TreeViewExItem}" x:Key="TreeViewExBaseStyle">
         <Style.Resources>
-            <Controls:TreeViewLastChildConverter x:Key="LineConverter"/>
+            <Controls:TreeViewLastChildConverter x:Key="TreeViewLastChildConverter"/>
         </Style.Resources>
         <Setter Property="Background" Value="AliceBlue"/>
         <Setter Property="Control.HorizontalContentAlignment"
@@ -49,19 +49,18 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="#DCDCDC" SnapsToDevicePixels="True"/>
+                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="#DCDCDC" SnapsToDevicePixels="True" />
                             <Rectangle x:Name="VerLn" Width="1" Stroke="#DCDCDC" Margin="0,0,1,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"/>
                             <Border x:Name="border" Grid.Column="1"
 						            BorderThickness="1" 
                                     Padding="{TemplateBinding Control.Padding}"
                                     SnapsToDevicePixels="True"
-                                    CornerRadius="2" VerticalAlignment="Center" Margin="1,0,1,0">
+                                    CornerRadius="2" VerticalAlignment="Center" Margin="-10,0,0,0">
                                 <DockPanel x:Name="ct">
-                                    <FrameworkElement DockPanel.Dock="Left" Margin="{Binding Offset, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource doubleToMarginConverter}}"/>
-                                    <ToggleButton DockPanel.Dock="Left" 
-                                    IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=IsExpanded,FallbackValue=False}"
-                                    Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=HasItems, Converter={StaticResource boolToVisiblityConverterHidden},FallbackValue=Hidden}"
-                                    ClickMode="Press" Name="Expander" HorizontalAlignment="Right">
+                                    <ToggleButton DockPanel.Dock="Left" Margin="-10,0,0,0"
+                                        IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=IsExpanded,FallbackValue=False}"
+                                        Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=HasItems, Converter={StaticResource boolToVisiblityConverterHidden},FallbackValue=Collapsed}"
+                                        ClickMode="Press" Name="Expander" HorizontalAlignment="Right">
                                         <ToggleButton.Style>
                                             <Style TargetType="{x:Type ToggleButton}">
                                                 <Style.Resources>
@@ -97,7 +96,7 @@
                                             </Style>
                                         </ToggleButton.Style>
                                     </ToggleButton>
-                                    <ContentPresenter x:Name="content"
+                                    <ContentPresenter x:Name="content" Margin="5,0,0,0"
                                     FocusManager.IsFocusScope="True" 
                                     Content="{TemplateBinding HeaderedContentControl.Header}"
                                     ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}"
@@ -109,11 +108,11 @@
                                     SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                                 </DockPanel>
                             </Border>
-                            <ItemsPresenter x:Name="itemsPresenter"  Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisiblityConverterCollapsed}, FallbackValue=Hidden}"/>
+                            <ItemsPresenter x:Name="itemsPresenter" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisiblityConverterCollapsed}, FallbackValue=Hidden}"/>
                         </Grid>
                     </StackPanel>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource LineConverter}}" Value="true">
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource TreeViewLastChildConverter}}" Value="true">
                             <Setter TargetName="VerLn" Property="Height" Value="9"/>
                             <Setter TargetName="VerLn" Property="VerticalAlignment" Value="Top"/>
                         </DataTrigger>
