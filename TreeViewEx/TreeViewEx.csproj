@@ -90,6 +90,7 @@
     <Compile Include="Controls\DragNDrop\IPositionable.cs" />
     <Compile Include="Controls\DragNDrop\ItemBorderAdorner.cs" />
     <Compile Include="Controls\DragNDrop\ItemContent.cs" />
+    <Compile Include="Controls\RootLinesVisibilityConverter.cs" />
     <Compile Include="Controls\TreeViewLastChildConverter.cs" />
     <Compile Include="Controls\VerticalArea.cs" />
     <Compile Include="Controls\AutoScroller.cs" />

@@ -9,6 +9,7 @@
     <Style TargetType="{x:Type Controls:TreeViewExItem}" x:Key="TreeViewExBaseStyle">
         <Style.Resources>
             <Controls:TreeViewLastChildConverter x:Key="TreeViewLastChildConverter"/>
+            <Controls:RootLinesVisibilityConverter x:Key="RootLinesVisibilityConverter"/>
         </Style.Resources>
         <Setter Property="Background" Value="AliceBlue"/>
         <Setter Property="Control.HorizontalContentAlignment"
@@ -115,6 +116,9 @@
                         <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource TreeViewLastChildConverter}}" Value="true">
                             <Setter TargetName="VerLn" Property="Height" Value="9"/>
                             <Setter TargetName="VerLn" Property="VerticalAlignment" Value="Top"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource RootLinesVisibilityConverter}}" Value="true">
+                            <Setter TargetName="VerLn" Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True" SourceName="border">
                             <Setter Property="Control.Background" TargetName="border"
