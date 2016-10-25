@@ -50,8 +50,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="#DCDCDC" SnapsToDevicePixels="True" />
-                            <Rectangle x:Name="VerLn" Width="1" Stroke="#DCDCDC" Margin="0,0,1,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"/>
+                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="Gray" SnapsToDevicePixels="True" />
+                            <Rectangle x:Name="VerLn" Width="1" Stroke="Gray" Margin="0,0,1,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"/>
                             <Border x:Name="border" Grid.Column="1"
 						            BorderThickness="1" 
                                     Padding="{TemplateBinding Control.Padding}"
@@ -113,11 +113,23 @@
                         </Grid>
                     </StackPanel>
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource TreeViewLastChildConverter}}" Value="true">
-                            <Setter TargetName="VerLn" Property="Height" Value="9"/>
+                        <DataTrigger Value="true">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource TreeViewLastChildConverter}">
+                                    <Binding RelativeSource="{RelativeSource Self}"/>
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Controls:TreeViewEx}" Path="RenderDataChanged"/>
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+                            <Setter TargetName="VerLn" Property="Height" Value="10"/>
                             <Setter TargetName="VerLn" Property="VerticalAlignment" Value="Top"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource RootLinesVisibilityConverter}}" Value="true">
+                        <DataTrigger Value="true">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource RootLinesVisibilityConverter}">
+                                    <Binding RelativeSource="{RelativeSource Self}"/>
+                                    <Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=Controls:TreeViewEx}" Path="RenderDataChanged"/>
+                                </MultiBinding>
+                            </DataTrigger.Binding>
                             <Setter TargetName="VerLn" Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True" SourceName="border">

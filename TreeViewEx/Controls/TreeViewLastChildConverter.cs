@@ -1,23 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Data;
 
 namespace System.Windows.Controls
 {
-    class TreeViewLastChildConverter : IValueConverter
+    class TreeViewLastChildConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            TreeViewExItem item = (TreeViewExItem)value;
-            ItemsControl ic = ItemsControl.ItemsControlFromItemContainer(item);
+            var item = values.OfType<TreeViewExItem>().Single();
+            var ic = ItemsControl.ItemsControlFromItemContainer(item);
+            if (ic == null) return false;
             return ic.ItemContainerGenerator.IndexFromContainer(item) == ic.Items.Count - 1;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetType, object parameter, CultureInfo culture)
         {
-            return false;
+            throw new NotSupportedException();
         }
     }
 }

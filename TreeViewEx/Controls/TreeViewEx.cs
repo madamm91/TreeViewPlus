@@ -64,7 +64,14 @@ namespace System.Windows.Controls
         
         public static readonly DependencyProperty IsVirtualizingProperty =
             DependencyProperty.Register("IsVirtualizing", typeof(bool), typeof(TreeViewEx), new PropertyMetadata(false));
-        
+
+        public static readonly DependencyProperty RenderDataChangedProperty =
+            DependencyProperty.RegisterAttached("RenderDataChanged", typeof(DateTime), typeof(TreeViewEx));
+
+        private void UpdateRenderDataChanged()
+        {
+            RenderDataChanged = DateTime.Now;
+        }
 
         internal TreeViewExAutomationPeer automationPeer;
 
@@ -112,10 +119,28 @@ namespace System.Windows.Controls
 
         #region Properties
 
+        public DateTime RenderDataChanged
+        {
+            get
+            {
+                return (DateTime)GetValue(RenderDataChangedProperty);
+            }
+            set
+            {
+                SetValue(RenderDataChangedProperty, value);
+            }
+        }
+
         public bool IsVirtualizing
         {
-            get { return (bool)GetValue(IsVirtualizingProperty); }
-            set { SetValue(IsVirtualizingProperty, value); }
+            get
+            {
+                return (bool)GetValue(IsVirtualizingProperty);
+            }
+            set
+            {
+                SetValue(IsVirtualizingProperty, value);
+            }
         }
 
         public Brush BackgroundSelectionRectangle
@@ -550,6 +575,7 @@ namespace System.Windows.Controls
                 default:
                     throw new InvalidOperationException();
             }
+            UpdateRenderDataChanged();
         }
 
         /// <summary>
@@ -573,6 +599,7 @@ namespace System.Windows.Controls
                 default:
                     throw new NotSupportedException();
             }
+            //UpdateRenderDataChanged();
         }
         #endregion
     }
