@@ -334,6 +334,7 @@ namespace System.Windows.Controls.DragNDrop
                 TreeView.Drop -= OnDrop;
                 TreeView.DragOver -= OnDragOver;
                 TreeView.DragLeave -= OnDragLeave;
+                TreeView.DragEnter -= OnDragEnter;
                 TreeView.GiveFeedback -= OnGiveFeedBack;
             }
             itemMouseIsOver = null;
