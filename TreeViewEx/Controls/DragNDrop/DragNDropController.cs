@@ -1,14 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
+using System.Windows.Documents;
+using System.Windows.Threading;
 
 namespace System.Windows.Controls.DragNDrop
 {
-    using System.Linq;
-    using System.Windows.Documents;
-    using System.Windows.Media;
-    using System.Windows.Threading;
-
     class DragNDropController : InputSubscriberBase, IDisposable
     {
         private AutoScroller autoScroller;
@@ -19,6 +17,8 @@ namespace System.Windows.Controls.DragNDrop
 
         Stopwatch stopWatch;
 
+        private DispatcherTimer dragAdornerClearer;
+
         private List<Adorner> actualAdorners = new List<Adorner>();
 
         const int dragAreaSize = 5;
@@ -26,6 +26,28 @@ namespace System.Windows.Controls.DragNDrop
         public DragNDropController(AutoScroller autoScroller)
         {
             this.autoScroller = autoScroller;
+            InitDragAdornerClearer();
+        }
+
+        private void InitDragAdornerClearer()
+        {
+            // It appears there's a quirk in the drag/drop system.  While the user is dragging the object
+            // over our control it appears the system will send us (quite frequently) DragLeave followed 
+            // immediately by DragEnter events.  So when we get DragLeave, we can't be sure that the 
+            // drag/drop operation was actually terminated. Cake is a lie. Therefore, instead of doing cleanup
+            // immediately, we schedule the cleanup to execute later and if during that time we receive
+            // another DragEnter or DragOver event, then we don't do the cleanup.
+
+            dragAdornerClearer = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromMilliseconds(50)
+            };
+            dragAdornerClearer.Tick += DragAdornerClearerTick;
+        }
+
+        private void DragAdornerClearerTick(object sender, EventArgs e)
+        {
+            CleanUpAdorners();
         }
 
         internal override void Initialized()
@@ -36,24 +58,21 @@ namespace System.Windows.Controls.DragNDrop
             TreeView.Drop += OnDrop;
             TreeView.DragOver += OnDragOver;
             TreeView.DragLeave += OnDragLeave;
+            TreeView.DragEnter += OnDragEnter;
             TreeView.GiveFeedback += OnGiveFeedBack;
+        }
+
+        private void OnDragEnter(object sender, DragEventArgs e)
+        {
+            dragAdornerClearer.Stop();
         }
 
         void OnDragLeave(object sender, DragEventArgs e)
         {
-            if (!IsMouseOverTreeView(e.GetPosition(TreeView)))
-            {
-                CleanUpAdorners();
-            }
+            dragAdornerClearer.Start();
         }
 
-        private bool IsMouseOverTreeView(Point pos)
-        {
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(TreeView, pos);
-            if (hitTestResult == null || hitTestResult.VisualHit == null) return false;
-
-            return true;
-        }
+       
 
         public bool Enabled { get; set; }
         //private bool CanDrag { get { return draggableItems != null && draggableItems.Count > 0; } }
@@ -230,6 +249,7 @@ namespace System.Windows.Controls.DragNDrop
         private DropInfo dropInfo;
         void OnDragOver(object sender, DragEventArgs e)
         {
+            dragAdornerClearer.Stop();
             // drag over is the only event which returns the position
             // GiveFeedback returns nonsense even from Mouse.GetPosition
             Point point = e.GetPosition(TreeView);
