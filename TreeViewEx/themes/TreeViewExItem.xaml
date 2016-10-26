@@ -5,6 +5,7 @@
 
     <BooleanToVisibilityConverter x:Key="boolToVisiblityConverterCollapsed"/>
     <Controls:BoolToVisibilityConverterHidden x:Key="boolToVisiblityConverterHidden"/>
+    <Controls:BoolToVisibilityConverterHidden x:Key="boolToVisiblityConverterHiddenInverse" TrueValue="Hidden" FalseValue="Visible"/>
     <Controls:DoubleToThicknessLeftConverter x:Key="doubleToMarginConverter"/>
     <Style TargetType="{x:Type Controls:TreeViewExItem}" x:Key="TreeViewExBaseStyle">
         <Style.Resources>
@@ -19,7 +20,7 @@
         <Setter Property="Control.Padding" Value="1" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,0" />
         <Setter Property="FrameworkElement.FocusVisualStyle">
             <Setter.Value>
                 <Style TargetType="{x:Type IFrameworkInputElement}">
@@ -42,62 +43,87 @@
                     <StackPanel Background="Transparent" x:Name="stacki">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="19" Width="Auto"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="20"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <Rectangle x:Name="HorLn" Margin="9,1,0,0" Height="1" Stroke="Gray" SnapsToDevicePixels="True" />
-                            <Rectangle x:Name="VerLn" Width="1" Stroke="Gray" Margin="0,0,1,0" Grid.RowSpan="2" SnapsToDevicePixels="true" Fill="White"/>
+                            <Rectangle x:Name="HorLn" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="8,0,0,0" Height="1" Width="14" Stroke="Gray" HorizontalAlignment="Left" SnapsToDevicePixels="True" />
+                            <Rectangle x:Name="VerLn" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="8,0,0,0" Width="1" Stroke="Gray" HorizontalAlignment="Left" SnapsToDevicePixels="True"/>
+                            <Rectangle x:Name="VerLnExt" Grid.Column="0" Grid.Row="0" VerticalAlignment="Top" Height="3" Margin="8,-3,0,0" Width="1" Stroke="Gray" HorizontalAlignment="Left" SnapsToDevicePixels="True"/>
+                            <ToggleButton Grid.Column="0" Grid.Row="0" Margin="0,0,0,0"
+                                        IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=IsExpanded,FallbackValue=False}"
+                                        Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=HasItems, Converter={StaticResource boolToVisiblityConverterHidden},FallbackValue=Collapsed}"
+                                        ClickMode="Press" Name="Expander" HorizontalAlignment="Left">
+                                <ToggleButton.Style>
+                                    <Style TargetType="{x:Type ToggleButton}">
+                                        <Style.Resources>
+                                            <ResourceDictionary />
+                                        </Style.Resources>
+                                        <Setter Property="UIElement.Focusable" Value="False" />
+                                        <Setter Property="FrameworkElement.Width" Value="16" />
+                                        <Setter Property="FrameworkElement.Height" Value="16" />
+                                        <Setter Property="Control.Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                    <Border Width="9" Height="9" SnapsToDevicePixels="true" BorderBrush="#FF7898B5"
+                                                                    BorderThickness="1" CornerRadius="1">
+                                                        <Border.Background>
+                                                            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                                                <GradientStop Color="White" Offset=".2" />
+                                                                <GradientStop Color="#FFC0B7A6" Offset="1" />
+                                                            </LinearGradientBrush>
+                                                        </Border.Background>
+                                                        <Path x:Name="ExpandPath" Fill="Black" Margin="1,1,1,1"
+                                                                      Data="M 0 2 L 0 3 L 2 3 L 2 5 L 3 5 L 3 3 L 5 3 L 5 2 L 3 2 L 3 0 L 2 0 L 2 2 Z" />
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter Property="Data" TargetName="ExpandPath" Value="M 0 2 L 0 3 L 5 3 L 5 2 Z" />
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ToggleButton.Style>
+                            </ToggleButton>
+                            <Button  Grid.Column="0" Grid.Row="0" Margin="0,0,0,0"
+                                        Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=HasItems, 
+                                Converter={StaticResource boolToVisiblityConverterHiddenInverse},FallbackValue=Collapsed}"
+                                        Name="ExpanderPlaceholder" HorizontalAlignment="Left">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Focusable" Value="False" />
+                                        <Setter Property="Width" Value="16" />
+                                        <Setter Property="Height" Value="16" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border Width="9" Height="9" SnapsToDevicePixels="true" BorderBrush="#FF7898B5"
+                                                                    BorderThickness="1" CornerRadius="1">
+                                                        <Border.Background>
+                                                            <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
+                                                                <GradientStop Color="White" Offset=".2" />
+                                                                <GradientStop Color="#FFC0B7A6" Offset="1" />
+                                                            </LinearGradientBrush>
+                                                        </Border.Background>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
                             <Border x:Name="border" Grid.Column="1"
 						            BorderThickness="1" 
                                     Padding="{TemplateBinding Control.Padding}"
                                     SnapsToDevicePixels="True"
-                                    CornerRadius="2" VerticalAlignment="Center" Margin="-10,0,0,0">
-                                <DockPanel x:Name="ct">
-                                    <ToggleButton DockPanel.Dock="Left" Margin="-10,0,0,0"
-                                        IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=IsExpanded,FallbackValue=False}"
-                                        Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:TreeViewExItem}},Path=HasItems, Converter={StaticResource boolToVisiblityConverterHidden},FallbackValue=Collapsed}"
-                                        ClickMode="Press" Name="Expander" HorizontalAlignment="Right">
-                                        <ToggleButton.Style>
-                                            <Style TargetType="{x:Type ToggleButton}">
-                                                <Style.Resources>
-                                                    <ResourceDictionary />
-                                                </Style.Resources>
-                                                <Setter Property="UIElement.Focusable" Value="False" />
-                                                <Setter Property="FrameworkElement.Width" Value="16" />
-                                                <Setter Property="FrameworkElement.Height" Value="16" />
-                                                <Setter Property="Control.Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                                            <Border Width="19" Height="13" Background="Transparent">
-                                                                <Border Width="9" Height="9" SnapsToDevicePixels="true" BorderBrush="#FF7898B5"
-                                                                    BorderThickness="1" CornerRadius="1">
-                                                                    <Border.Background>
-                                                                        <LinearGradientBrush EndPoint="1,1" StartPoint="0,0">
-                                                                            <GradientStop Color="White" Offset=".2" />
-                                                                            <GradientStop Color="#FFC0B7A6" Offset="1" />
-                                                                        </LinearGradientBrush>
-                                                                    </Border.Background>
-                                                                    <Path x:Name="ExpandPath" Fill="Black" Margin="1,1,1,1"
-                                                                      Data="M 0 2 L 0 3 L 2 3 L 2 5 L 3 5 L 3 3 L 5 3 L 5 2 L 3 2 L 3 0 L 2 0 L 2 2 Z" />
-                                                                </Border>
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsChecked" Value="True">
-                                                                    <Setter Property="Data" TargetName="ExpandPath" Value="M 0 2 L 0 3 L 5 3 L 5 2 Z" />
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </ToggleButton.Style>
-                                    </ToggleButton>
-                                    <ContentPresenter x:Name="content" Margin="5,0,0,0"
+                                    CornerRadius="2" VerticalAlignment="Center" Margin="0,0,0,0">
+                                <ContentPresenter x:Name="content" Margin="0,0,0,0"
                                     FocusManager.IsFocusScope="True" 
                                     Content="{TemplateBinding HeaderedContentControl.Header}"
                                     ContentTemplate="{TemplateBinding HeaderedContentControl.HeaderTemplate}"
@@ -107,7 +133,6 @@
                                     HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
                                     SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                                </DockPanel>
                             </Border>
                             <ItemsPresenter x:Name="itemsPresenter" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Visibility="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolToVisiblityConverterCollapsed}, FallbackValue=Hidden}"/>
                         </Grid>
@@ -131,6 +156,7 @@
                                 </MultiBinding>
                             </DataTrigger.Binding>
                             <Setter TargetName="VerLn" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="VerLnExt" Property="Visibility" Value="Hidden"/>
                         </DataTrigger>
                         <Trigger Property="IsMouseOver" Value="True" SourceName="border">
                             <Setter Property="Control.Background" TargetName="border"
